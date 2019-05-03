@@ -7,7 +7,7 @@ from display import *
   # Ambient light is represeneted by a color value
 
   # Point light sources are 2D arrays of doubles.
-  #      - The fist index (LOCATION) represents the vector to the light.
+  #      - The first index (LOCATION) represents the vector to the light.
   #      - The second index (COLOR) represents the color.
 
   # Reflection constants (ka, kd, ks) are represened as arrays of
@@ -24,8 +24,8 @@ SPECULAR_EXP = 4
 def get_lighting(normal, view, ambient, light, areflect, dreflect, sreflect ):
     #find i
 
-def calculate_ambient(alight, areflect):
-    
+def calculate_ambient(light, areflect):
+    return [areflect
 
 def calculate_diffuse(light, dreflect, normal):
     
