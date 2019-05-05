@@ -22,19 +22,56 @@ SPECULAR_EXP = 4
 
 #lighting functions
 def get_lighting(normal, view, ambient, light, areflect, dreflect, sreflect ):
-    #find i
+    a = calculate_ambient(ambient, areflect)
+    d = calculate_diffuse(light, dreflect, normal)
+    s = calculate_specular(light, sreflect, view, normal)
+
+    return [limit_color(int(a[0] + d[0] + s[0])),
+            limit_color(int(a[1] + d[1] + s[1])),
+            limit_color(int(a[2] + d[2] + s[2]))]
 
 def calculate_ambient(light, areflect):
-    return [areflect
+    return [limit_color(light[0] * areflect[0]),
+            limit_color(light[1] * areflect[1]),
+            limit_color(light[2] * areflect[2])]
+
 
 def calculate_diffuse(light, dreflect, normal):
-    
+    normalize(normal)
+    normalize(light[LOCATION])
+    cos = dot_product(normal, light[LOCATION])
+
+    return[limit_color(light[COLOR][0]*dreflect[0]*cos),
+           limit_color(light[COLOR][1]*dreflect[1]*cos),
+           limit_color(light[COLOR][2]*dreflect[2]*cos)]
 
 def calculate_specular(light, sreflect, view, normal):
-    
+    normalize(normal)
+    normalize(light[LOCATION])
+    normalize(view)
+
+    dot = 2 * dot_product(light[LOCATION], normal)
+    r = [normal[0]*dot - light[LOCATION][0],
+         normal[1]*dot - light[LOCATION][1],
+         normal[2]*dot - light[LOCATION][2]]
+
+    cos = dot_product(r, view)
+    if cos < 0:
+        cos = 0
+    cos = pow(cos, SPECULAR_EXP)
+
+    return [limit_color(light[COLOR][0] * sreflect[0])*cos,
+            limit_color(light[COLOR][1] * sreflect[1])*cos,
+            limit_color(light[COLOR][2] * sreflect[2])*cos]
 
 def limit_color(color):
-    
+    if color < 0:
+        return 0
+    elif color > 255:
+        return 255
+    else:
+        return color
+
 
 #vector functions
 #normalize vetor, should modify the parameter
